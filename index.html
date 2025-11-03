@@ -19,9 +19,11 @@
   <div class="background-shape"></div>
 
   <!-- Botão de voltar -->
-  <button class="btn-back" onclick="window.history.back()">
+  <button class="btn-back" onclick="window.location.href='https://lyvenmusic.carrd.co'">
   <i class="bi bi-arrow-left"></i> Voltar
-  </button>
+</button>
+
+
 
   <img src="./assets/logo.jpg" alt="Lyven Music" class="logo">
 
@@ -40,40 +42,8 @@
 
   <footer>© 2025 Lyven Music</footer>
 
-  <script>
-    const pdfs = [
-      { nome: "Aquarela do Brasil", link: "pdfs/aquarela.pdf" },
-      { nome: "Garota de Ipanema", link: "pdfs/garota.pdf" },
-      { nome: "Trem das Onze", link: "pdfs/trem.pdf" },
-      { nome: "Chega de Saudade", link: "pdfs/chega.pdf" },
-      { nome: "Asa Branca", link: "pdfs/asa.pdf" },
-      { nome: "A thousand miles - vanessa carlton"}
-    ];
+  <script src="./assets/index.js"></script>
 
-    pdfs.sort((a, b) => a.nome.localeCompare(b.nome));
-
-    const lista = document.getElementById("lista-pdfs");
-    const searchInput = document.getElementById("search");
-
-    function renderList(filtro = "") {
-      lista.innerHTML = "";
-      pdfs
-        .filter(pdf => pdf.nome.toLowerCase().includes(filtro.toLowerCase()))
-        .forEach(pdf => {
-          const li = document.createElement("li");
-          li.innerHTML = `
-            <span>${pdf.nome}</span>
-            <a href="${pdf.link}" download title="Baixar PDF">
-              <i class="bi bi-filetype-pdf"></i>
-            </a>
-          `;
-          lista.appendChild(li);
-        });
-    }
-
-    searchInput.addEventListener("input", () => renderList(searchInput.value));
-    renderList();
-  </script>
 
 </body>
 </html>
