@@ -189,6 +189,13 @@ footer {
   color: #ff7777;
 }
 
+.music-title {
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+}
+
+
 
 /* Responsividade */
 @media (max-width: 600px) {
