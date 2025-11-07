@@ -74,39 +74,12 @@ function renderizarLista(pdfs, filtro = "") {
     });
 }
 
-async function buscarDoGitHub() {
-  const urlBase = `https://api.github.com/repos/${repoOwner}/${repoName}/contents`;
-  const pastasResp = await fetch(`${urlBase}?ref=${branch}`);
-  if (!pastasResp.ok) throw new Error("Erro ao buscar pastas.");
-
-  const pastas = await pastasResp.json();
-  const pdfs = [];
-
-  for (const pasta of pastas) {
-    if (pasta.type !== "dir") continue;
-
-    const arqsResp = await fetch(`${urlBase}/${encodeURIComponent(pasta.name)}?ref=${branch}`);
-    if (!arqsResp.ok) continue;
-
-    const arquivos = await arqsResp.json();
-    const instrumentos = arquivos
-      .filter(a => a.name.toLowerCase().endsWith(".pdf"))
-      .map(a => ({
-        name: a.name.replace(/\.pdf$/i, ""),
-        url: `https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/${encodeURIComponent(pasta.name)}/${encodeURIComponent(a.name)}`
-      }));
-
-    if (instrumentos.length > 0) {
-      pdfs.push({
-        nome: pasta.name.replace(/ - PDF's$/i, ""),
-        instrumentos
-      });
-    }
-  }
-
-  salvarCache(pdfs);
-  return pdfs;
+async function buscarDoServidor() {
+  const resp = await fetch("https://server-lyven-music.onrender.com/api/pdfs");
+  if (!resp.ok) throw new Error("Erro ao buscar PDFs no servidor.");
+  return await resp.json();
 }
+
 
 async function carregarPDFs() {
   lista.innerHTML = "<li style='text-align:center;padding:20px;'>Carregando músicas...</li>";
@@ -114,14 +87,14 @@ async function carregarPDFs() {
   const cache = lerCache();
   if (cache) {
     renderizarLista(cache);
-    buscarDoGitHub()
-      .then(d => { salvarCache(d); renderizarLista(d); })
-      .catch(e => console.warn("Atualização silenciosa falhou:", e));
-    return;
+    buscarDoServidor()
+  .then(d => { salvarCache(d); renderizarLista(d); })
+  .catch(e => console.warn("Atualização silenciosa falhou:", e));
+
   }
 
   try {
-    const pdfs = await buscarDoGitHub();
+    const pdfs = await buscarDoServidor();
     renderizarLista(pdfs);
   } catch (err) {
     lista.innerHTML = `<li style='text-align:center;color:#f88;padding:20px;'>Erro: ${err.message}</li>`;
